@@ -9,7 +9,7 @@ const Cart = () => {
   const navigate = useNavigate();
   const { cartItems, onUpdateQuantity, onRemoveItem } = useOutletContext();
 
-  const subtotal = cartItems.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+const subtotal = cartItems.reduce((sum, item) => sum + ((item.price_c || 0) * item.quantity), 0);
   const shipping = subtotal > 1000 ? 0 : 100;
   const total = subtotal + shipping;
 
@@ -39,21 +39,21 @@ const Cart = () => {
         {/* Cart Items */}
         <div className="lg:col-span-2 space-y-4">
           {cartItems.map((item) => (
-            <div key={item.Id} className="bg-white rounded-lg shadow-sm border p-6">
+<div key={item.Id} className="bg-white rounded-lg shadow-sm border p-6">
               <div className="flex space-x-4">
                 <img
-                  src={item.images[0]}
-                  alt={item.name}
+                  src={(Array.isArray(item.images_c) ? item.images_c : [])[0]}
+                  alt={item.name_c}
                   className="w-20 h-20 object-cover rounded cursor-pointer"
                   onClick={() => navigate(`/product/${item.Id}`)}
                 />
                 
                 <div className="flex-1">
-                  <h3 
+<h3 
                     className="font-medium text-gray-900 line-clamp-2 cursor-pointer hover:text-primary transition-colors"
                     onClick={() => navigate(`/product/${item.Id}`)}
                   >
-                    {item.name}
+                    {item.name_c}
                   </h3>
                   
                   {item.brand && (
@@ -62,8 +62,8 @@ const Cart = () => {
                   
                   <div className="mt-2">
                     <PriceDisplay 
-                      price={item.price} 
-                      originalPrice={item.originalPrice} 
+price={item.price_c} 
+                      originalPrice={item.original_price_c}
                       size="base" 
                     />
                   </div>
@@ -103,8 +103,8 @@ const Cart = () => {
                   <div className="mt-3 pt-3 border-t">
                     <div className="flex justify-between items-center">
                       <span className="text-sm text-gray-600">Item total:</span>
-                      <span className="font-semibold text-primary">
-                        ₹{(item.price * item.quantity).toLocaleString()}
+<span className="font-semibold text-primary">
+                        ₹{((item.price_c || 0) * item.quantity).toLocaleString()}
                       </span>
                     </div>
                   </div>

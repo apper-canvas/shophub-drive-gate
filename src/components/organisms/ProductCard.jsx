@@ -14,7 +14,7 @@ const ProductCard = ({ product, onAddToCart, onAddToCompare }) => {
   const handleAddToCart = (e) => {
     e.stopPropagation();
     onAddToCart(product);
-    toast.success(`${product.name} added to cart!`);
+toast.success(`${product.name_c} added to cart!`);
   };
 
 const handleAddToCompare = (e) => {
@@ -34,8 +34,9 @@ const handleAddToCompare = (e) => {
   const handleCardClick = () => {
     navigate(`/product/${product.Id}`);
   };
-  const isOutOfStock = !product.inStock;
-  const hasDiscount = product.originalPrice && product.originalPrice > product.price;
+const isOutOfStock = !product.in_stock_c;
+  const hasDiscount = product.original_price_c && product.original_price_c > product.price_c;
+  const images = Array.isArray(product.images_c) ? product.images_c : [];
 
   return (
     <Card hover className="cursor-pointer overflow-hidden group" onClick={handleCardClick}>
@@ -43,7 +44,7 @@ const handleAddToCompare = (e) => {
         {/* Product Image */}
         <div className="aspect-square overflow-hidden bg-gray-100">
           <img
-            src={product.images[0]}
+src={images[0]}
             alt={product.name}
             className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
           />
@@ -51,9 +52,9 @@ const handleAddToCompare = (e) => {
 
         {/* Badges */}
         <div className="absolute top-2 left-2 flex flex-col space-y-1">
-          {hasDiscount && (
+{hasDiscount && (
             <Badge variant="discount" className="text-xs font-bold">
-              {Math.round(((product.originalPrice - product.price) / product.originalPrice) * 100)}% OFF
+              {Math.round(((product.original_price_c - product.price_c) / product.original_price_c) * 100)}% OFF
             </Badge>
           )}
           {isOutOfStock && (
@@ -66,27 +67,26 @@ const handleAddToCompare = (e) => {
 
       <div className="p-4">
         {/* Brand */}
-        {product.brand && (
+{product.brand_c && (
           <p className="text-xs text-gray-500 uppercase tracking-wide mb-1">
-            {product.brand}
+            {product.brand_c}
           </p>
         )}
 
         {/* Product Name */}
-        <h3 className="font-medium text-gray-900 line-clamp-2 mb-2 group-hover:text-primary transition-colors">
-          {product.name}
+<h3 className="font-medium text-gray-900 line-clamp-2 mb-2 group-hover:text-primary transition-colors">
+          {product.name_c}
         </h3>
-
         {/* Rating */}
         <div className="mb-3">
-          <StarRating rating={product.rating} reviewCount={product.reviewCount} size={14} />
+<StarRating rating={product.rating_c} reviewCount={product.review_count_c} size={14} />
         </div>
 
         {/* Price */}
         <div className="mb-4">
-          <PriceDisplay
-            price={product.price}
-            originalPrice={product.originalPrice}
+<PriceDisplay
+            price={product.price_c}
+            originalPrice={product.original_price_c}
             size="base"
           />
         </div>

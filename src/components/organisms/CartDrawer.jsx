@@ -8,10 +8,9 @@ import { toast } from "react-toastify";
 const CartDrawer = ({ isOpen, onClose, cartItems, onUpdateQuantity, onRemoveItem }) => {
   const navigate = useNavigate();
 
-  const subtotal = cartItems.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+const subtotal = cartItems.reduce((sum, item) => sum + ((item.price_c || 0) * item.quantity), 0);
   const shipping = subtotal > 1000 ? 0 : 100;
   const total = subtotal + shipping;
-
   const handleCheckout = () => {
     if (cartItems.length === 0) {
       toast.error("Your cart is empty");
@@ -68,13 +67,13 @@ const CartDrawer = ({ isOpen, onClose, cartItems, onUpdateQuantity, onRemoveItem
                 {cartItems.map((item) => (
                   <div key={item.Id} className="flex space-x-4 bg-gray-50 rounded-lg p-3">
                     <img
-                      src={item.images[0]}
-                      alt={item.name}
+src={(Array.isArray(item.images_c) ? item.images_c : [])[0]}
+                      alt={item.name_c}
                       className="w-16 h-16 object-cover rounded"
                     />
                     <div className="flex-1">
-                      <h4 className="font-medium text-sm line-clamp-2">{item.name}</h4>
-                      <PriceDisplay price={item.price} size="sm" />
+                      <h4 className="font-medium text-sm line-clamp-2">{item.name_c}</h4>
+                      <PriceDisplay price={item.price_c} size="sm" />
                       
                       <div className="flex items-center justify-between mt-2">
                         <div className="flex items-center space-x-2">

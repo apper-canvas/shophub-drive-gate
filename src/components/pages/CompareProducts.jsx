@@ -1,15 +1,15 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate, useOutletContext } from "react-router-dom";
+import { toast } from "react-toastify";
 import { getCompareItems } from "@/services/api/comparisonService";
+import ApperIcon from "@/components/ApperIcon";
 import Loading from "@/components/ui/Loading";
 import Empty from "@/components/ui/Empty";
 import Button from "@/components/atoms/Button";
 import Card from "@/components/atoms/Card";
+import Badge from "@/components/atoms/Badge";
 import StarRating from "@/components/molecules/StarRating";
 import PriceDisplay from "@/components/molecules/PriceDisplay";
-import Badge from "@/components/atoms/Badge";
-import ApperIcon from "@/components/ApperIcon";
-import { toast } from "react-toastify";
 
 const CompareProducts = () => {
   const navigate = useNavigate();
@@ -50,11 +50,11 @@ const CompareProducts = () => {
   };
 
   // Get all unique specification keys from all products
-  const getAllSpecKeys = () => {
+const getAllSpecKeys = () => {
     const keys = new Set();
     products.forEach(product => {
-      if (product.specifications) {
-        Object.keys(product.specifications).forEach(key => keys.add(key));
+      if (product.specifications_c) {
+        Object.keys(product.specifications_c).forEach(key => keys.add(key));
       }
     });
     return Array.from(keys).sort();
@@ -106,9 +106,11 @@ const CompareProducts = () => {
 
       {/* Comparison Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {products.map((product) => {
-          const isOutOfStock = !product.inStock;
-          const hasDiscount = product.originalPrice && product.originalPrice > product.price;
+{products.map((product) => {
+          const isOutOfStock = !product.in_stock_c;
+          const hasDiscount = product.original_price_c && product.original_price_c > product.price_c;
+          const images = Array.isArray(product.images_c) ? product.images_c : [];
+          const specifications = product.specifications_c || {};
 
           return (
             <Card key={product.Id} className="relative">
@@ -124,14 +126,14 @@ const CompareProducts = () => {
               {/* Product Image */}
               <div className="relative aspect-square overflow-hidden bg-gray-100 rounded-t-lg">
                 <img
-                  src={product.images[0]}
-                  alt={product.name}
+                  src={images[0]}
+                  alt={product.name_c}
                   className="w-full h-full object-cover"
                 />
                 {hasDiscount && (
                   <div className="absolute top-2 left-2">
                     <Badge variant="discount" className="text-xs font-bold">
-                      {Math.round(((product.originalPrice - product.price) / product.originalPrice) * 100)}% OFF
+                      {Math.round(((product.original_price_c - product.price_c) / product.original_price_c) * 100)}% OFF
                     </Badge>
                   </div>
                 )}
@@ -144,22 +146,22 @@ const CompareProducts = () => {
 
               <div className="p-4">
                 {/* Brand */}
-                {product.brand && (
+                {product.brand_c && (
                   <p className="text-xs text-gray-500 uppercase tracking-wide mb-1">
-                    {product.brand}
+                    {product.brand_c}
                   </p>
                 )}
 
                 {/* Product Name */}
                 <h3 className="font-semibold text-gray-900 mb-2 line-clamp-2">
-                  {product.name}
+                  {product.name_c}
                 </h3>
 
                 {/* Rating */}
                 <div className="mb-3">
                   <StarRating 
-                    rating={product.rating} 
-                    reviewCount={product.reviewCount} 
+                    rating={product.rating_c} 
+                    reviewCount={product.review_count_c} 
                     size={14} 
                   />
                 </div>
@@ -167,8 +169,8 @@ const CompareProducts = () => {
                 {/* Price */}
                 <div className="mb-4">
                   <PriceDisplay
-                    price={product.price}
-                    originalPrice={product.originalPrice}
+                    price={product.price_c}
+                    originalPrice={product.original_price_c}
                     size="lg"
                   />
                 </div>
@@ -179,7 +181,7 @@ const CompareProducts = () => {
                     Specifications
                   </h4>
                   {specKeys.map(key => {
-                    const value = product.specifications?.[key];
+                    const value = specifications?.[key];
                     return (
                       <div key={key} className="flex justify-between text-sm">
                         <span className="text-gray-600 font-medium">{key}:</span>
@@ -248,18 +250,18 @@ const CompareProducts = () => {
         <Card>
           <div className="overflow-x-auto">
             <table className="w-full">
-              <thead>
+<thead>
                 <tr className="border-b border-gray-200">
                   <th className="text-left p-4 font-semibold text-gray-900">
                     Specification
                   </th>
                   {products.map(product => (
                     <th key={product.Id} className="text-left p-4 font-semibold text-gray-900">
-                      {product.name}
+                      {product.name_c}
                     </th>
                   ))}
                 </tr>
-              </thead>
+</thead>
               <tbody>
                 {/* Price Row */}
                 <tr className="border-b border-gray-100">
@@ -267,35 +269,33 @@ const CompareProducts = () => {
                   {products.map(product => (
                     <td key={product.Id} className="p-4">
                       <PriceDisplay
-                        price={product.price}
-                        originalPrice={product.originalPrice}
+                        price={product.price_c}
+                        originalPrice={product.original_price_c}
                         size="base"
                       />
                     </td>
                   ))}
                 </tr>
-
-                {/* Rating Row */}
+{/* Rating Row */}
                 <tr className="border-b border-gray-100">
                   <td className="p-4 font-medium text-gray-700">Rating</td>
                   {products.map(product => (
                     <td key={product.Id} className="p-4">
                       <StarRating 
-                        rating={product.rating} 
-                        reviewCount={product.reviewCount} 
+                        rating={product.rating_c} 
+                        reviewCount={product.review_count_c} 
                         size={14} 
                       />
                     </td>
                   ))}
                 </tr>
-
-                {/* Availability Row */}
+{/* Availability Row */}
                 <tr className="border-b border-gray-100">
                   <td className="p-4 font-medium text-gray-700">Availability</td>
                   {products.map(product => (
                     <td key={product.Id} className="p-4">
-                      <Badge variant={product.inStock ? "success" : "error"}>
-                        {product.inStock ? "In Stock" : "Out of Stock"}
+                      <Badge variant={product.in_stock_c ? "success" : "error"}>
+                        {product.in_stock_c ? "In Stock" : "Out of Stock"}
                       </Badge>
                     </td>
                   ))}
@@ -306,7 +306,7 @@ const CompareProducts = () => {
                   <tr key={key} className="border-b border-gray-100">
                     <td className="p-4 font-medium text-gray-700">{key}</td>
                     {products.map(product => {
-                      const value = product.specifications?.[key];
+                      const value = product.specifications_c?.[key];
                       return (
                         <td key={product.Id} className="p-4 text-gray-900">
                           {value || '-'}
@@ -315,7 +315,6 @@ const CompareProducts = () => {
                     })}
                   </tr>
                 ))}
-              </tbody>
             </table>
           </div>
         </Card>

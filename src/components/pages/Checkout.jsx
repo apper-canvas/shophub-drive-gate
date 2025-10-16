@@ -1,11 +1,11 @@
 import React, { useState } from "react";
-import { useOutletContext, useNavigate } from "react-router-dom";
+import { useNavigate, useOutletContext } from "react-router-dom";
+import { toast } from "react-toastify";
 import { createOrder } from "@/services/api/orderService";
+import ApperIcon from "@/components/ApperIcon";
 import Button from "@/components/atoms/Button";
 import Input from "@/components/atoms/Input";
 import Card from "@/components/atoms/Card";
-import ApperIcon from "@/components/ApperIcon";
-import { toast } from "react-toastify";
 
 const Checkout = () => {
   const navigate = useNavigate();
@@ -26,7 +26,7 @@ const Checkout = () => {
   const [paymentMethod, setPaymentMethod] = useState("cod");
   const [errors, setErrors] = useState({});
 
-  const subtotal = cartItems.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+const subtotal = cartItems.reduce((sum, item) => sum + ((item.price_c || 0) * item.quantity), 0);
   const shipping = subtotal > 1000 ? 0 : 100;
   const total = subtotal + shipping;
 
@@ -71,16 +71,16 @@ const Checkout = () => {
     setLoading(true);
     try {
       const orderData = {
-        items: cartItems.map(item => ({
+items_c: cartItems.map(item => ({
           productId: item.Id,
           quantity: item.quantity,
-          price: item.price,
-          name: item.name
+          price: item.price_c,
+          name: item.name_c
         })),
-        total,
-        deliveryAddress: deliveryInfo,
-        paymentMethod,
-        status: "confirmed"
+        total_c: total,
+        delivery_address_c: deliveryInfo,
+        payment_method_c: paymentMethod,
+        status_c: "confirmed"
       };
 
       const order = await createOrder(orderData);
@@ -290,21 +290,24 @@ const Checkout = () => {
             <Card className="p-6 sticky top-24">
               <h2 className="text-lg font-semibold mb-4">Order Summary</h2>
 
-              <div className="space-y-3 mb-4 max-h-60 overflow-y-auto">
+<div className="space-y-3 mb-4 max-h-60 overflow-y-auto">
                 {cartItems.map((item) => (
                   <div key={item.Id} className="flex space-x-3 py-2">
                     <img
-                      src={item.images[0]}
-                      alt={item.name}
+                      src={item.image_url_c || '/placeholder.png'}
+                      alt={item.name_c || 'Product'}
                       className="w-12 h-12 object-cover rounded"
                     />
                     <div className="flex-1 min-w-0">
                       <p className="text-sm font-medium text-gray-900 line-clamp-2">
-                        {item.name}
+                        {item.name_c || 'Product'}
                       </p>
                       <p className="text-sm text-gray-600">
-                        Qty: {item.quantity} × ₹{item.price.toLocaleString()}
+                        Qty: {item.quantity} × ₹{(item.price_c || 0).toLocaleString()}
                       </p>
+                    </div>
+                    <div className="text-right">
+                      <p className="text-sm font-medium">₹{((item.price_c || 0) * item.quantity).toLocaleString()}</p>
                     </div>
                   </div>
                 ))}

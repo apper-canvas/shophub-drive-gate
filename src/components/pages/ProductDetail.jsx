@@ -45,7 +45,7 @@ const handleAddToCart = () => {
     for (let i = 0; i < quantity; i++) {
       onAddToCart(product);
     }
-    toast.success(`${quantity} × ${product.name} added to cart!`);
+    toast.success(`${quantity} × ${product.name_c} added to cart!`);
   };
 
   const handleBuyNow = () => {
@@ -67,8 +67,9 @@ const handleAddToCart = () => {
   if (!product) return <Error message="Product not found" />;
 
   const isOutOfStock = !product.inStock;
-  const hasDiscount = product.originalPrice && product.originalPrice > product.price;
-
+const hasDiscount = product.original_price_c && product.original_price_c > product.price_c;
+  const images = Array.isArray(product.images_c) ? product.images_c : [];
+  const specifications = product.specifications_c || {};
   return (
     <div className="max-w-6xl mx-auto px-4 py-8">
       {/* Breadcrumb */}
@@ -78,13 +79,13 @@ const handleAddToCart = () => {
         </button>
         <ApperIcon name="ChevronRight" size={16} />
         <button 
-          onClick={() => navigate(`/?category=${product.category}`)}
+onClick={() => navigate(`/?category=${product.category_c}`)}
           className="hover:text-primary"
         >
-          {product.category}
+          {product.category_c}
         </button>
         <ApperIcon name="ChevronRight" size={16} />
-        <span className="text-gray-900">{product.name}</span>
+        <span className="text-gray-900">{product.name_c}</span>
       </nav>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
@@ -93,16 +94,16 @@ const handleAddToCart = () => {
           {/* Main Image */}
           <div className="aspect-square overflow-hidden rounded-lg bg-gray-100">
             <img
-              src={product.images[selectedImage]}
-              alt={product.name}
+src={images[selectedImage]}
+              alt={product.name_c}
               className="w-full h-full object-cover"
             />
           </div>
 
           {/* Thumbnail Images */}
-          {product.images.length > 1 && (
+{images.length > 1 && (
             <div className="grid grid-cols-4 gap-2">
-              {product.images.map((image, index) => (
+              {images.map((image, index) => (
                 <button
                   key={index}
                   onClick={() => setSelectedImage(index)}
@@ -112,7 +113,7 @@ const handleAddToCart = () => {
                 >
                   <img
                     src={image}
-                    alt={`${product.name} ${index + 1}`}
+                    alt={`${product.name_c} ${index + 1}`}
                     className="w-full h-full object-cover"
                   />
                 </button>
@@ -124,23 +125,23 @@ const handleAddToCart = () => {
         {/* Product Info */}
         <div className="space-y-6">
           {/* Brand */}
-          {product.brand && (
+{product.brand_c && (
             <p className="text-sm text-gray-500 uppercase tracking-wide">
-              {product.brand}
+              {product.brand_c}
             </p>
           )}
 
           {/* Title */}
-          <h1 className="text-2xl lg:text-3xl font-bold text-gray-900">
-            {product.name}
+<h1 className="text-2xl lg:text-3xl font-bold text-gray-900">
+            {product.name_c}
           </h1>
 
           {/* Rating */}
           <div className="flex items-center space-x-4">
-            <StarRating rating={product.rating} reviewCount={product.reviewCount} size={20} />
-            {product.reviewCount > 0 && (
+<StarRating rating={product.rating_c} reviewCount={product.review_count_c} size={20} />
+            {product.review_count_c > 0 && (
               <span className="text-sm text-blue-600 hover:underline cursor-pointer">
-                See all {product.reviewCount} reviews
+                See all {product.review_count_c} reviews
               </span>
             )}
           </div>
@@ -148,13 +149,13 @@ const handleAddToCart = () => {
           {/* Price */}
           <div className="space-y-2">
             <PriceDisplay
-              price={product.price}
-              originalPrice={product.originalPrice}
+price={product.price_c}
+              originalPrice={product.original_price_c}
               size="xl"
             />
             {hasDiscount && (
               <p className="text-sm text-green-600 font-medium">
-                You save ₹{(product.originalPrice - product.price).toLocaleString()}
+                You save ₹{(product.original_price_c - product.price_c).toLocaleString()}
               </p>
             )}
           </div>
@@ -170,17 +171,17 @@ const handleAddToCart = () => {
 
           {/* Description */}
           <div className="prose prose-gray max-w-none">
-            <h3 className="font-semibold mb-2">Description</h3>
-            <p className="text-gray-700 leading-relaxed">{product.description}</p>
+<h3 className="font-semibold mb-2">Description</h3>
+            <p className="text-gray-700 leading-relaxed">{product.description_c}</p>
           </div>
 
           {/* Specifications */}
-          {product.specifications && Object.keys(product.specifications).length > 0 && (
+{specifications && Object.keys(specifications).length > 0 && (
             <div>
               <h3 className="font-semibold mb-3">Specifications</h3>
               <div className="bg-gray-50 rounded-lg p-4">
                 <dl className="grid grid-cols-1 gap-2">
-                  {Object.entries(product.specifications).map(([key, value]) => (
+                  {Object.entries(specifications).map(([key, value]) => (
                     <div key={key} className="flex justify-between py-1">
                       <dt className="text-gray-600 capitalize">{key}:</dt>
                       <dd className="text-gray-900 font-medium">{value}</dd>

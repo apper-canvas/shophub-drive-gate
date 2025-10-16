@@ -67,20 +67,20 @@ const OrderConfirmation = () => {
             <div className="grid grid-cols-2 gap-4 text-sm">
               <div>
                 <span className="text-gray-600">Order ID:</span>
-                <p className="font-medium">#{order.Id.toString().padStart(8, "0")}</p>
+<p className="font-medium">#{order.Id.toString().padStart(8, "0")}</p>
               </div>
               <div>
                 <span className="text-gray-600">Order Date:</span>
-                <p className="font-medium">{format(new Date(order.orderDate), "PPP")}</p>
+<p className="font-medium">{format(new Date(order.order_date_c), "PPP")}</p>
               </div>
               <div>
                 <span className="text-gray-600">Estimated Delivery:</span>
-                <p className="font-medium">{format(new Date(order.estimatedDelivery), "PPP")}</p>
+<p className="font-medium">{format(new Date(order.estimated_delivery_c), "PPP")}</p>
               </div>
               <div>
                 <span className="text-gray-600">Payment Method:</span>
                 <p className="font-medium capitalize">
-                  {order.paymentMethod === "cod" ? "Cash on Delivery" : order.paymentMethod.toUpperCase()}
+{order.payment_method_c === "cod" ? "Cash on Delivery" : order.payment_method_c.toUpperCase()}
                 </p>
               </div>
             </div>
@@ -93,16 +93,16 @@ const OrderConfirmation = () => {
               Delivery Address
             </h2>
             <div className="text-gray-700">
-              <p className="font-medium">{order.deliveryAddress.fullName}</p>
-              <p>{order.deliveryAddress.address}</p>
+<p className="font-medium">{order.delivery_address_c.fullName}</p>
+              <p>{order.delivery_address_c.address}</p>
               <p>
-                {order.deliveryAddress.city}, {order.deliveryAddress.state} - {order.deliveryAddress.pincode}
+                {order.delivery_address_c.city}, {order.delivery_address_c.state} - {order.delivery_address_c.pincode}
               </p>
               <p className="mt-2">
-                <span className="text-gray-600">Phone:</span> {order.deliveryAddress.phone}
+                <span className="text-gray-600">Phone:</span> {order.delivery_address_c.phone}
               </p>
               <p>
-                <span className="text-gray-600">Email:</span> {order.deliveryAddress.email}
+                <span className="text-gray-600">Email:</span> {order.delivery_address_c.email}
               </p>
             </div>
           </Card>
@@ -111,7 +111,7 @@ const OrderConfirmation = () => {
           <Card className="p-6">
             <h2 className="text-lg font-semibold mb-4">Items Ordered</h2>
             <div className="space-y-4">
-              {order.items.map((item) => (
+{order.items_c.map((item) => (
                 <div key={`${item.productId}-${item.name}`} className="flex space-x-4 py-3 border-b last:border-b-0">
                   <div className="w-16 h-16 bg-gray-100 rounded flex items-center justify-center">
                     <ApperIcon name="Package" size={20} className="text-gray-400" />
@@ -139,16 +139,16 @@ const OrderConfirmation = () => {
             <div className="space-y-2 text-sm">
               <div className="flex justify-between">
                 <span>Subtotal:</span>
-                <span>₹{(order.total - (order.total > 1000 ? 0 : 100)).toLocaleString()}</span>
+<span>₹{(order.total_c - (order.total_c > 1000 ? 0 : 100)).toLocaleString()}</span>
               </div>
               <div className="flex justify-between">
                 <span>Shipping:</span>
-                <span>{order.total > 1000 ? "Free" : "₹100"}</span>
+                <span>{order.total_c > 1000 ? "Free" : "₹100"}</span>
               </div>
               <hr />
               <div className="flex justify-between font-semibold text-lg">
                 <span>Total:</span>
-                <span className="text-primary">₹{order.total.toLocaleString()}</span>
+                <span className="text-primary">₹{order.total_c.toLocaleString()}</span>
               </div>
             </div>
           </Card>

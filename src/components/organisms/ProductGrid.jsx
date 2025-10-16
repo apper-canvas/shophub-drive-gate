@@ -26,10 +26,11 @@ const [selectedCategories, setSelectedCategories] = useState([]);
   const [priceRange, setPriceRange] = useState([0, 100000]);
   const [searchQuery, setSearchQuery] = useState(searchParams.get("search") || "");
   const [selectedBrands, setSelectedBrands] = useState([]);
-  const [minRating, setMinRating] = useState(0);
+const [minRating, setMinRating] = useState(0);
   const [availabilityFilter, setAvailabilityFilter] = useState("all");
   const [brands, setBrands] = useState([]);
-useEffect(() => {
+  
+  useEffect(() => {
     loadData();
   }, []);
 
@@ -41,9 +42,9 @@ useEffect(() => {
       setSelectedCategories([category]);
     }
     setSearchQuery(search);
-  }, [searchParams]);
+}, [searchParams]);
 
-const loadData = async () => {
+  const loadData = async () => {
     try {
       setLoading(true);
       setError("");
@@ -60,38 +61,42 @@ const loadData = async () => {
     } finally {
       setLoading(false);
     }
-  };
+};
 
-const filteredProducts = products.filter((product) => {
-    const matchesCategory = selectedCategories.length === 0 || selectedCategories.includes(product.category);
-    const matchesPrice = product.price >= priceRange[0] && product.price <= priceRange[1];
-    const matchesSearch = !searchQuery || 
-      product.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      product.description.toLowerCase().includes(searchQuery.toLowerCase());
-    const matchesBrand = selectedBrands.length === 0 || selectedBrands.includes(product.brand);
-    const matchesRating = minRating === 0 || (product.rating && product.rating >= minRating);
+  const filteredProducts = products.filter((product) => {
+    const matchesCategory = selectedCategories.length === 0 || selectedCategories.includes(product.category_c);
+    const matchesPrice = product.price_c >= priceRange[0] && product.price_c <= priceRange[1];
+    const matchesSearch = !searchQuery ||
+      product.name_c?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      product.description_c?.toLowerCase().includes(searchQuery.toLowerCase());
+    const matchesBrand = selectedBrands.length === 0 || selectedBrands.includes(product.brand_c);
+    const matchesRating = minRating === 0 || (product.rating_c && product.rating_c >= minRating);
     const matchesAvailability = 
       availabilityFilter === "all" || 
-      (availabilityFilter === "inStock" && product.inStock) ||
-      (availabilityFilter === "outOfStock" && !product.inStock);
-    
+      (availabilityFilter === "inStock" && product.in_stock_c) ||
+      (availabilityFilter === "outOfStock" && !product.in_stock_c);
     return matchesCategory && matchesPrice && matchesSearch && matchesBrand && matchesRating && matchesAvailability;
-  });
+});
 
-const handleClearFilters = () => {
+  const handleClearFilters = () => {
     setSelectedCategories([]);
     setPriceRange([0, 100000]);
+    setSearchQuery("");
     setSelectedBrands([]);
     setMinRating(0);
     setAvailabilityFilter("all");
-    navigate("/");
   };
+
+  const maxPrice = products.length > 0 
+    ? Math.max(...products.map(p => p.price_c || 0)) 
+    : 200000;
+
+  const categoryOptions = categories.map(cat => cat.name_c);
 
   if (loading) return <Loading type="products" />;
   if (error) return <Error message={error} onRetry={loadData} />;
 
-const hasActiveFilters = selectedCategories.length > 0 || searchQuery || priceRange[0] > 0 || priceRange[1] < 100000 || selectedBrands.length > 0 || minRating > 0 || availabilityFilter !== "all";
-
+  const hasActiveFilters = selectedCategories.length > 0 || searchQuery || priceRange[0] > 0 || priceRange[1] < 100000 || selectedBrands.length > 0 || minRating > 0 || availabilityFilter !== "all";
   return (
     <div className="max-w-7xl mx-auto px-4 py-6">
       <div className="flex flex-col lg:flex-row gap-6">
@@ -123,14 +128,13 @@ const hasActiveFilters = selectedCategories.length > 0 || searchQuery || priceRa
                   <span className="text-sm font-medium">Clear All Filters</span>
                 </button>
               </div>
-            )}
+)}
             
-<CategoryFilter
+            <CategoryFilter
               categories={categories}
               selectedCategories={selectedCategories}
               onCategoriesChange={setSelectedCategories}
             />
-            
             <BrandFilter
               brands={brands}
               selectedBrands={selectedBrands}
@@ -155,9 +159,9 @@ const hasActiveFilters = selectedCategories.length > 0 || searchQuery || priceRa
         </div>
 
         {/* Products Grid */}
-        <div className="flex-1">
+<div className="flex-1">
           {/* Results Header */}
-<div className="flex items-center justify-between mb-6">
+          <div className="flex items-center justify-between mb-6">
             <div>
               <h2 className="text-xl font-semibold text-gray-900">
                 {searchQuery ? `Search results for "${searchQuery}"` : 
@@ -179,9 +183,9 @@ const hasActiveFilters = selectedCategories.length > 0 || searchQuery || priceRa
               }
               actionText="Clear Filters"
               onAction={hasActiveFilters ? handleClearFilters : undefined}
-              icon="Package"
+icon="Package"
             />
-) : (
+          ) : (
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
               {filteredProducts.map((product) => (
                 <ProductCard

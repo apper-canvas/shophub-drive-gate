@@ -1,21 +1,26 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { useDispatch, useSelector } from "react-redux";
-import { logout } from "@/store/authSlice";
-import { toast } from "react-toastify";
+import { useSelector, useDispatch } from "react-redux";
+import { toast } from "react-hot-toast";
+import { useAuth } from "@/layouts/Root";
 import ApperIcon from "@/components/ApperIcon";
+import Login from "@/components/pages/Login";
 import Button from "@/components/atoms/Button";
 import Badge from "@/components/atoms/Badge";
 import SearchBar from "@/components/molecules/SearchBar";
-const Header = ({ cartItemCount = 0, compareItemsCount = 0 }) => {
+
+const Header = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const { isAuthenticated, user } = useSelector((state) => state.auth);
+  const { isAuthenticated, user } = useSelector((state) => state.user);
+  const { logout } = useAuth();
   const [showUserMenu, setShowUserMenu] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-
+  
+  const compareItemsCount = useSelector((state) => state.compare?.items?.length || 0);
+  const cartItemCount = useSelector((state) => state.cart?.items?.length || 0);
+  
   const categories = [
-    "Electronics",
     "Fashion",
     "Books", 
     "Home & Garden", 
@@ -80,7 +85,7 @@ const Header = ({ cartItemCount = 0, compareItemsCount = 0 }) => {
             >
               <ApperIcon name="User" size={20} className="text-gray-700" />
               <span className="text-sm font-medium text-gray-700 hidden sm:inline">
-                {user?.name || user?.email}
+{user?.firstName || user?.emailAddress || "User"}
               </span>
               <ApperIcon name="ChevronDown" size={16} className="text-gray-500" />
             </button>
@@ -95,7 +100,7 @@ const Header = ({ cartItemCount = 0, compareItemsCount = 0 }) => {
                   <div className="px-4 py-2 border-b border-gray-200">
                     <p className="text-xs text-gray-500">Signed in as</p>
                     <p className="text-sm font-medium text-gray-900 truncate">
-                      {user?.email}
+{user?.emailAddress}
                     </p>
                   </div>
                   <button
@@ -105,7 +110,7 @@ const Header = ({ cartItemCount = 0, compareItemsCount = 0 }) => {
                     }}
                     className="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 flex items-center gap-2"
                   >
-                    <ApperIcon name="Package" size={16} />
+<ApperIcon name="Package" size={16} />
                     Order History
                   </button>
                   <button
