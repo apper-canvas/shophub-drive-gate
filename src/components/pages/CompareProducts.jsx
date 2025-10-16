@@ -262,7 +262,7 @@ const getAllSpecKeys = () => {
                   ))}
                 </tr>
 </thead>
-              <tbody>
+<tbody>
                 {/* Price Row */}
                 <tr className="border-b border-gray-100">
                   <td className="p-4 font-medium text-gray-700">Price</td>
@@ -276,7 +276,8 @@ const getAllSpecKeys = () => {
                     </td>
                   ))}
                 </tr>
-{/* Rating Row */}
+
+                {/* Rating Row */}
                 <tr className="border-b border-gray-100">
                   <td className="p-4 font-medium text-gray-700">Rating</td>
                   {products.map(product => (
@@ -289,7 +290,8 @@ const getAllSpecKeys = () => {
                     </td>
                   ))}
                 </tr>
-{/* Availability Row */}
+
+                {/* Availability Row */}
                 <tr className="border-b border-gray-100">
                   <td className="p-4 font-medium text-gray-700">Availability</td>
                   {products.map(product => (
@@ -315,6 +317,7 @@ const getAllSpecKeys = () => {
                     })}
                   </tr>
                 ))}
+              </tbody>
             </table>
           </div>
         </Card>
