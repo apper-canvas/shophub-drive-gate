@@ -13,15 +13,15 @@ const CategoryFilter = ({ categories, selectedCategories, onCategoriesChange }) 
     <div className="bg-white rounded-lg shadow-sm p-4">
       <h3 className="font-semibold text-gray-900 mb-3">Categories</h3>
       <div className="space-y-2">
-        {categories.map((category) => (
+{categories.map((category) => (
           <label key={category.Id} className="flex items-center cursor-pointer">
             <input
               type="checkbox"
-              checked={selectedCategories.includes(category.name)}
-              onChange={() => handleCategoryToggle(category.name)}
+              checked={selectedCategories.includes(category.name_c)}
+              onChange={() => handleCategoryToggle(category.name_c)}
               className="text-primary focus:ring-primary rounded"
             />
-            <span className="ml-2 text-sm">{category.name}</span>
+            <span className="ml-2 text-sm">{category.name_c}</span>
           </label>
         ))}
       </div>
